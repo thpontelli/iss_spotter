@@ -29,4 +29,28 @@ const fetchMyIP = function(callback) {
   });
 };
 
+const fetchCoordsByIP = function(ip, callback) {
+  request('http://ipwho.is/' + ip, (error, response, body) => {
+    if (error) {
+      return callback(error, null);
+    }
+    
+    // if non-200 status, assume server error
+    if (response.statusCode !== 200) {
+      const msg = `Status Code ${response.statusCode} when fetching coordinates. Response: ${body}`;
+      callback(Error(msg), null);
+      return;
+    }
+
+    // if we get here, all's well and we got the data
+    const data = JSON.parse(body);
+    const { latitude, longitude } = data;
+    console.log(data);
+    callback(null, {latitude, longitude});
+    
+  });
+
+};
+
 module.exports = { fetchMyIP };
+module.exports = { fetchCoordsByIP };
